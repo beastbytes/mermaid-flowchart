@@ -14,16 +14,48 @@ trait GraphTrait
     private array $links = [];
     /** @var Node[] */
     private array $nodes = [];
+    /** @var SubGraph[] */
+    private array $subGraphs = [];
 
-    public function link(Link $link): self
+    public function addLink(Link ...$link): self
     {
-        $this->links[] = $link;
-        return $this;
+        $new = clone $this;
+        $new->links = array_merge($new->links, $link);
+        return $new;
     }
 
-    public function node(Node $node): self
+    public function withLink(Link ...$link): self
     {
-        $this->nodes[] = $node;
-        return $this;
+        $new = clone $this;
+        $new->links = $link;
+        return $new;
+    }
+
+    public function addNode(Node ...$node): self
+    {
+        $new = clone $this;
+        $new->nodes = array_merge($new->nodes, $node);
+        return $new;
+    }
+
+    public function withNode(Node ...$node): self
+    {
+        $new = clone $this;
+        $new->nodes = $node;
+        return $new;
+    }
+
+    public function addSubGraph(SubGraph ...$subGraph): self
+    {
+        $new = clone $this;
+        $new->subGraphs = array_merge($new->subGraphs, $subGraph);
+        return $new;
+    }
+
+    public function withSubGraph(SubGraph ...$subGraph): self
+    {
+        $new = clone $this;
+        $new->subGraphs = $subGraph;
+        return $new;
     }
 }

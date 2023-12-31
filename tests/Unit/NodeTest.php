@@ -6,7 +6,6 @@ use BeastBytes\Mermaid\Mermaid;
 
 const TEXT = 'Text';
 const MARKDOWN_TEXT = '*Markdown* Text';
-
 const NODE_ID = 'node';
 
 test('Simple node', function () {

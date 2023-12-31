@@ -10,32 +10,34 @@ namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\NodeInterface;
 use BeastBytes\Mermaid\NodeTrait;
+use BeastBytes\Mermaid\StyleClassTrait;
 use BeastBytes\Mermaid\TextTrait;
 
 final class Node implements NodeInterface
 {
     use NodeTrait;
+    use StyleClassTrait;
     use TextTrait;
 
     public function __construct(
         private readonly string $id,
         private readonly NodeShape $shape = NodeShape::Rectangle,
-        private readonly ?string $text = null,
-        private readonly bool $isMarkdown = false
+        private string $text = '',
+        private readonly bool $isMarkdown = false,
+        private readonly string $styleClass = ''
     )
     {
-    }
-
-    public function getStyleClass(): string
-    {
-        return 'class';
+        if ($this->text === '') {
+            $this->text = $this->id;
+        }
     }
 
     public function render(string $indentation): string
     {
         return $indentation
             . $this->getId()
-            . sprintf($this->shape->value, $this->getText($this->text ?? $this->id, $this->isMarkdown))
+            . $this->getStyleClass()
+            . sprintf($this->shape->value, $this->getText())
         ;
     }
 }

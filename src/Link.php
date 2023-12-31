@@ -21,7 +21,7 @@ final class Link
     public function __construct(
         private readonly Node $node0,
         private readonly Node $node1,
-        private readonly ?string $text = null,
+        private string $text = '',
         private readonly bool $isMarkdown = false,
         private readonly LinkStyle $style = LinkStyle::Solid,
         private readonly int $length = 1,
@@ -62,7 +62,7 @@ final class Link
             $reverseArrowhead,
             $link,
             $arrowhead,
-            $this->text === null ? '' : sprintf(self::TEXT, $this->getText($this->text, $this->isMarkdown)),
+            $this->text === '' ? '' : sprintf(self::TEXT, $this->getText()),
             $this->node1->getId()
         );
     }

@@ -14,12 +14,14 @@ final class SubGraph
 {
     use GraphTrait;
 
+    private const DIRECTION = 'direction';
     private const END = 'end';
     private const TYPE = 'subgraph';
 
     public function __construct(
-        private readonly Direction $direction = Direction::TB,
-        private readonly string $title = ''
+        private readonly string $title = '',
+        private readonly string $id = '',
+        private readonly Direction $direction = Direction::TB
     )
     {
     }
@@ -29,8 +31,17 @@ final class SubGraph
         /** @psalm-var list<string> $output */
         $output = [];
 
-        $output[] = $indentation . self::TYPE . ($this->title !== '' ? '' : ' ' . $this->title);
-        $output[] = $indentation . $this->direction->name;
+        $title = $this->title;
+        if ($title !== '' && $this->id !== '') {
+            $title = $this->id . ' [' . $this->title . ']';
+        }
+
+        $output[] = $indentation . self::TYPE . ($title === '' ? '' : ' ' . $title);
+        $output[] = $indentation . Mermaid::INDENTATION . self::DIRECTION . ' ' . $this->direction->name;
+
+        foreach ($this->subGraphs as $subGraph) {
+            $output[] = $subGraph->render($indentation . Mermaid::INDENTATION);
+        }
 
         foreach ($this->nodes as $node) {
             $output[] = $node->render($indentation . Mermaid::INDENTATION);

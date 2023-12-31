@@ -10,19 +10,16 @@ namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\Mermaid;
 use BeastBytes\Mermaid\MermaidInterface;
-use BeastBytes\Mermaid\StyleTrait;
+use BeastBytes\Mermaid\StyleClassTrait;
 use Stringable;
 
 final class Flowchart implements MermaidInterface, Stringable
 {
     use GraphTrait;
-    use StyleTrait;
+    use StyleClassTrait;
 
-    public const TITLE_DELIMITER = '---';
+    public const TITLE = "---\ntitle: %s\n---";
     private const TYPE = 'flowchart';
-
-    /** @var SubGraph[] */
-    private array $subGraphs = [];
 
     public function __construct(
         private readonly string $title = '',
@@ -36,24 +33,20 @@ final class Flowchart implements MermaidInterface, Stringable
         return $this->render();
     }
 
-    public function subGraph(SubGraph $subGraph): self
-    {
-        $this->subGraphs[] = $subGraph;
-        return $this;
-    }
-
     public function render(): string
     {
         /** @psalm-var list<string> $output */
         $output = [];
 
         if ($this->title !== '') {
-            $output[] = self::TITLE_DELIMITER;
-            $output[] = $this->title;
-            $output[] = self::TITLE_DELIMITER;
+            $output[] = sprintf(self::TITLE, $this->title);
         }
 
         $output[] = self::TYPE . ' ' . $this->direction->name;
+
+        foreach ($this->subGraphs as $subGraph) {
+            $output[] = $subGraph->render(Mermaid::INDENTATION);
+        }
 
         foreach ($this->nodes as $node) {
             $output[] = $node->render(Mermaid::INDENTATION);
@@ -63,12 +56,8 @@ final class Flowchart implements MermaidInterface, Stringable
             $output[] = $link->render(Mermaid::INDENTATION);
         }
 
-        foreach ($this->subGraphs as $subGraph) {
-            $output[] = $subGraph->render(Mermaid::INDENTATION);
-        }
-
         if (!empty($this->styleClasses)) {
-            $output[] = $this->renderStyles(Mermaid::INDENTATION);
+            $output[] = $this->getStyleClass(Mermaid::INDENTATION);
         }
 
         return Mermaid::render($output);
