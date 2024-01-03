@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace BeastBytes\Mermaid\Flowchart;
 
+use BeastBytes\Mermaid\Direction;
 use BeastBytes\Mermaid\Mermaid;
 
 final class SubGraph
@@ -28,7 +29,6 @@ final class SubGraph
 
     public function render(string $indentation): string
     {
-        /** @psalm-var list<string> $output */
         $output = [];
 
         $title = $this->title;

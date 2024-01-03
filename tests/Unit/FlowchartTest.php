@@ -1,6 +1,6 @@
 <?php
 
-use BeastBytes\Mermaid\Flowchart\Direction;
+use BeastBytes\Mermaid\Direction;
 use BeastBytes\Mermaid\Flowchart\Flowchart;
 use BeastBytes\Mermaid\Flowchart\Link;
 use BeastBytes\Mermaid\Flowchart\Node;

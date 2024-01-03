@@ -1,10 +1,9 @@
 <?php
 
-use BeastBytes\Mermaid\Flowchart\Direction;
+use BeastBytes\Mermaid\Direction;
 use BeastBytes\Mermaid\Flowchart\Link;
 use BeastBytes\Mermaid\Flowchart\Node;
 use BeastBytes\Mermaid\Flowchart\SubGraph;
-
 
 test('SubGraph with multiple nodes and links', function () {
     $node0 = new Node('node0');

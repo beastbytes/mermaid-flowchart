@@ -14,8 +14,7 @@ final class Link
 {
     use TextTrait;
 
-    private const LINK = '%s%s %s%s%s%s %s';
-    private const TEXT = '|%s|';
+    private const TEXT = '|';
     private const REVERSE_DEFAULT_ARROWHEAD = '<';
 
     public function __construct(
@@ -55,15 +54,15 @@ final class Link
             }
         }
 
-        return sprintf(
-            self::LINK,
-            $indentation,
-            $this->node0->getId(),
-            $reverseArrowhead,
-            $link,
-            $arrowhead,
-            $this->text === '' ? '' : sprintf(self::TEXT, $this->getText()),
-            $this->node1->getId()
-        );
+        return $indentation
+            . $this->node0->getId()
+            . ' '
+            . $reverseArrowhead
+            . $link
+            . $arrowhead
+            . ($this->text === '' ? '' : self::TEXT .  $this->getText() . self::TEXT)
+            . ' '
+            . $this->node1->getId()
+        ;
     }
 }
