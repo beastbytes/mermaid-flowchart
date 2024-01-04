@@ -10,10 +10,12 @@ namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\Direction;
 use BeastBytes\Mermaid\Mermaid;
+use BeastBytes\Mermaid\RenderItemsTrait;
 
 final class SubGraph
 {
     use GraphTrait;
+    use RenderItemsTrait;
 
     private const DIRECTION = 'direction';
     private const END = 'end';
@@ -27,6 +29,7 @@ final class SubGraph
     {
     }
 
+    /** @internal */
     public function render(string $indentation): string
     {
         $output = [];
@@ -39,16 +42,14 @@ final class SubGraph
         $output[] = $indentation . self::TYPE . ($title === '' ? '' : ' ' . $title);
         $output[] = $indentation . Mermaid::INDENTATION . self::DIRECTION . ' ' . $this->direction->name;
 
-        foreach ($this->subGraphs as $subGraph) {
-            $output[] = $subGraph->render($indentation . Mermaid::INDENTATION);
+        if (count($this->subGraphs) > 0) {
+            $output[] = $this->renderItems($this->subGraphs, $indentation);
         }
-
-        foreach ($this->nodes as $node) {
-            $output[] = $node->render($indentation . Mermaid::INDENTATION);
+        if (count($this->nodes) > 0) {
+            $output[] = $this->renderItems($this->nodes, $indentation);
         }
-
-        foreach ($this->links as $link) {
-            $output[] = $link->render($indentation . Mermaid::INDENTATION);
+        if (count($this->links) > 0) {
+            $output[] = $this->renderItems($this->links, $indentation);
         }
 
         $output[] = $indentation . self::END;

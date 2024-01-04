@@ -32,6 +32,7 @@ final class Node implements NodeInterface
         }
     }
 
+    /** @internal */
     public function render(string $indentation): string
     {
         return $indentation

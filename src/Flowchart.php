@@ -11,6 +11,7 @@ namespace BeastBytes\Mermaid\Flowchart;
 use BeastBytes\Mermaid\Direction;
 use BeastBytes\Mermaid\Mermaid;
 use BeastBytes\Mermaid\MermaidInterface;
+use BeastBytes\Mermaid\RenderItemsTrait;
 use BeastBytes\Mermaid\StyleClassTrait;
 use BeastBytes\Mermaid\TitleTrait;
 use Stringable;
@@ -18,6 +19,7 @@ use Stringable;
 final class Flowchart implements MermaidInterface, Stringable
 {
     use GraphTrait;
+    use RenderItemsTrait;
     use StyleClassTrait;
     use TitleTrait;
 
@@ -37,7 +39,6 @@ final class Flowchart implements MermaidInterface, Stringable
 
     public function render(): string
     {
-        /** @psalm-var list<string> $output */
         $output = [];
 
         if ($this->title !== '') {
@@ -46,16 +47,14 @@ final class Flowchart implements MermaidInterface, Stringable
 
         $output[] = self::TYPE . ' ' . $this->direction->name;
 
-        foreach ($this->subGraphs as $subGraph) {
-            $output[] = $subGraph->render(Mermaid::INDENTATION);
+        if (count($this->subGraphs) > 0) {
+            $output[] = $this->renderItems($this->subGraphs, '');
         }
-
-        foreach ($this->nodes as $node) {
-            $output[] = $node->render(Mermaid::INDENTATION);
+        if (count($this->nodes) > 0) {
+            $output[] = $this->renderItems($this->nodes, '');
         }
-
-        foreach ($this->links as $link) {
-            $output[] = $link->render(Mermaid::INDENTATION);
+        if (count($this->links) > 0) {
+            $output[] = $this->renderItems($this->links, '');
         }
 
         if (!empty($this->styleClasses)) {

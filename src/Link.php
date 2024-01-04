@@ -30,6 +30,7 @@ final class Link
     {
     }
 
+    /** @internal */
     public function render(string $indentation): string
     {
         $reverseArrowhead = '';
