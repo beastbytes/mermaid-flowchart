@@ -17,12 +17,29 @@ test('Simple Flowchart', function () {
 
     expect($flowchart->render())
         ->toBe("<pre class=\"mermaid\">\n"
-            . "flowchart TB\n"
-            . Mermaid::INDENTATION . '_' . NODE_ID . '[&quot;' . NODE_ID . "&quot;]\n"
-            . '</pre>'
+               . "flowchart TB\n"
+               . Mermaid::INDENTATION . '_' . NODE_ID . '[&quot;' . NODE_ID . "&quot;]\n"
+               . '</pre>'
         )
     ;
 });
+
+test('Flowchart with direction', function (Direction $direction) {
+    $flowchart = (new Flowchart())
+        ->withDirection($direction)
+        ->withNode(new Node(NODE_ID))
+    ;
+
+    expect($flowchart->render())
+        ->toBe("<pre class=\"mermaid\">\n"
+               . 'flowchart ' . $direction->name . "\n"
+               . Mermaid::INDENTATION . '_' . NODE_ID . '[&quot;' . NODE_ID . "&quot;]\n"
+               . '</pre>'
+        )
+    ;
+})
+    ->with([Direction::BT, Direction::LR, Direction::RL, Direction::TB])
+;
 
 test('Flowchart with title', function () {
     $flowchart = (new Flowchart(TITLE))
