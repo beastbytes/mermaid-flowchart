@@ -7,6 +7,7 @@ use BeastBytes\Mermaid\Mermaid;
 const TEXT = 'Text';
 const MARKDOWN_TEXT = '*Markdown* Text';
 const NODE_ID = 'node';
+const STYLE_CLASS = 'style_class';
 
 test('Simple node', function () {
     $node = new Node(NODE_ID);
@@ -38,6 +39,14 @@ test('Node with text', function (string $text, bool $isMarkdown, string $result)
 })
     ->with('text')
 ;
+
+test('Node with styleClass', function () {
+    $node = (new Node(NODE_ID))->withStyleClass(STYLE_CLASS);
+
+    expect($node->render(''))
+        ->toBe('_' . NODE_ID . ':::' . STYLE_CLASS  . '["' . NODE_ID . '"]')
+    ;
+});
 
 dataset('nodeShapes', [
     [NodeShape::Asymmetric, '  _' . NODE_ID . '>"' . NODE_ID . '"]'],

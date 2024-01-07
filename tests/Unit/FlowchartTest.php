@@ -58,6 +58,34 @@ test('Flowchart with title', function () {
     ;
 });
 
+test('Flowchart with classDefs', function () {
+    $flowchart = (new Flowchart())
+        ->withClassDef([
+            'classDef0' => 'fill:white',
+            'classDef1' => ['font-style' => 'italic']
+        ])
+        ->addClassDef(['classDef2' => [
+            'fill' => '#f00',
+            'color' => 'white',
+            'font-weight' => 'bold',
+            'stroke-width' => '2px',
+            'stroke' => 'yellow'
+        ]])
+        ->withNode((new Node(NODE_ID))->withStyleClass('classDef1'))
+    ;
+
+    expect($flowchart->render())
+        ->toBe("<pre class=\"mermaid\">\n"
+            . "flowchart TB\n"
+            . Mermaid::INDENTATION . '_' . NODE_ID . ':::classDef1' . '[&quot;' . NODE_ID . "&quot;]\n"
+            . Mermaid::INDENTATION . "classDef classDef0 fill:white;\n"
+            . Mermaid::INDENTATION . "classDef classDef1 font-style:italic;\n"
+            . Mermaid::INDENTATION . "classDef classDef2 fill:#f00,color:white,font-weight:bold,stroke-width:2px,stroke:yellow;\n"
+            . '</pre>'
+        )
+    ;
+});
+
 test('Flowchart with multiple nodes and links', function () {
     $node0 = new Node('node0');
     $node1 = new Node('node1');
@@ -147,19 +175,3 @@ test('Flowchart with subgraphs', function () {
         )
     ;
 });
-
-/*
-
-        ->classDef('classDef0', 'fill:white')
-        ->classDef('classDef1', ['font-style' => 'italic'])
-        ->classDef('classDef2', [
-            'fill' => '#f00',
-            'color' => 'white',
-            'font-weight' => 'bold',
-            'stroke-width' => '2px',
-            'stroke' => 'yellow'
-        ])
-        ->class('classDef0', [$node0, $node1])
-        ->class('classDef1', [$node0, $node2])
-        ->class('classDef2', [$node3])
- */
