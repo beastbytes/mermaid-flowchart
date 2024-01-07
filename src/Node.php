@@ -23,8 +23,7 @@ final class Node implements NodeInterface
         private readonly string $id,
         private readonly NodeShape $shape = NodeShape::Rectangle,
         private string $text = '',
-        private readonly bool $isMarkdown = false,
-        private readonly string $styleClass = ''
+        private readonly bool $isMarkdown = false
     )
     {
         if ($this->text === '') {
@@ -38,7 +37,7 @@ final class Node implements NodeInterface
         return $indentation
             . $this->getId()
             . $this->getStyleClass()
-            . sprintf($this->shape->value, $this->getText())
+            . str_replace('%s', $this->getText(), $this->shape->value)
         ;
     }
 }

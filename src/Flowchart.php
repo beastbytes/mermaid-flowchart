@@ -8,26 +8,26 @@ declare(strict_types=1);
 
 namespace BeastBytes\Mermaid\Flowchart;
 
-use BeastBytes\Mermaid\Direction;
+use BeastBytes\Mermaid\ClassDefTrait;
+use BeastBytes\Mermaid\DirectionTrait;
 use BeastBytes\Mermaid\Mermaid;
 use BeastBytes\Mermaid\MermaidInterface;
 use BeastBytes\Mermaid\RenderItemsTrait;
-use BeastBytes\Mermaid\StyleClassTrait;
 use BeastBytes\Mermaid\TitleTrait;
 use Stringable;
 
 final class Flowchart implements MermaidInterface, Stringable
 {
+    use ClassDefTrait;
+    use DirectionTrait;
     use GraphTrait;
     use RenderItemsTrait;
-    use StyleClassTrait;
     use TitleTrait;
 
     private const TYPE = 'flowchart';
 
     public function __construct(
-        private readonly string $title = '',
-        private readonly Direction $direction = Direction::TB
+        private readonly string $title = ''
     )
     {
     }
@@ -57,8 +57,8 @@ final class Flowchart implements MermaidInterface, Stringable
             $output[] = $this->renderItems($this->links, '');
         }
 
-        if (!empty($this->styleClasses)) {
-            $output[] = $this->getStyleClass();
+        if (!empty($this->classDefs)) {
+            $output[] = $this->renderClassDefs(Mermaid::INDENTATION);
         }
 
         return Mermaid::render($output);
