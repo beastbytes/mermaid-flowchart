@@ -5,6 +5,23 @@ use BeastBytes\Mermaid\Flowchart\Link;
 use BeastBytes\Mermaid\Flowchart\Node;
 use BeastBytes\Mermaid\Flowchart\SubGraph;
 
+defined('COMMENT') or define('COMMENT', 'Comment');
+
+test('SubGraph with comment', function () {
+    $subgraph = (new SubGraph())
+        ->withComment(COMMENT)
+    ;
+
+    expect($subgraph->render(''))
+        ->toBe(
+            '%% ' . COMMENT . "\n"
+            . "subgraph\n"
+            . "  direction TB\n"
+            . "end"
+        )
+    ;
+});
+
 test('SubGraph with multiple nodes and links', function () {
     $node0 = new Node('node0');
     $node1 = new Node('node1');

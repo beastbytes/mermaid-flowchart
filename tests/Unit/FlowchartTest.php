@@ -7,8 +7,9 @@ use BeastBytes\Mermaid\Flowchart\Node;
 use BeastBytes\Mermaid\Flowchart\SubGraph;
 use BeastBytes\Mermaid\Mermaid;
 
-const NODE_ID = 'nodeId';
-const TITLE = 'Title';
+defined('COMMENT') or define('COMMENT', 'Comment');
+defined('NODE_ID') or define('NODE_ID', 'nodeId');
+defined('TITLE') or define('TITLE', 'Title');
 
 test('Simple Flowchart', function () {
     $flowchart = (new Flowchart())
@@ -20,6 +21,22 @@ test('Simple Flowchart', function () {
                . "flowchart TB\n"
                . Mermaid::INDENTATION . '_' . NODE_ID . '[&quot;' . NODE_ID . "&quot;]\n"
                . '</pre>'
+        )
+    ;
+});
+
+test('Flowchart with comment', function () {
+    $flowchart = (new Flowchart())
+        ->withComment(COMMENT)
+        ->withNode(new Node(NODE_ID))
+    ;
+
+    expect($flowchart->render())
+        ->toBe("<pre class=\"mermaid\">\n"
+            . '%% ' . COMMENT . "\n"
+            . "flowchart TB\n"
+            . Mermaid::INDENTATION . '_' . NODE_ID . '[&quot;' . NODE_ID . "&quot;]\n"
+            . '</pre>'
         )
     ;
 });
@@ -42,7 +59,8 @@ test('Flowchart with direction', function (Direction $direction) {
 ;
 
 test('Flowchart with title', function () {
-    $flowchart = (new Flowchart(TITLE))
+    $flowchart = (new Flowchart())
+        ->withTitle(TITLE)
         ->withNode(new Node(NODE_ID))
     ;
 

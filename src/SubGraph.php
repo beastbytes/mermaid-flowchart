@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright © 2023 BeastBytes - All rights reserved
+ * @copyright Copyright © 2024 BeastBytes - All rights reserved
  * @license BSD 3-Clause
  */
 
@@ -8,13 +8,17 @@ declare(strict_types=1);
 
 namespace BeastBytes\Mermaid\Flowchart;
 
+use BeastBytes\Mermaid\CommentTrait;
 use BeastBytes\Mermaid\Direction;
+use BeastBytes\Mermaid\InteractionRendererTrait;
 use BeastBytes\Mermaid\Mermaid;
 use BeastBytes\Mermaid\RenderItemsTrait;
 
 final class SubGraph
 {
+    use CommentTrait;
     use GraphTrait;
+    use InteractionRendererTrait;
     use RenderItemsTrait;
 
     private const DIRECTION = 'direction';
@@ -34,6 +38,8 @@ final class SubGraph
     {
         $output = [];
 
+        $this->renderComment($indentation, $output);
+
         $title = $this->title;
         if ($title !== '' && $this->id !== '') {
             $title = $this->id . ' [' . $this->title . ']';
@@ -42,15 +48,10 @@ final class SubGraph
         $output[] = $indentation . self::TYPE . ($title === '' ? '' : ' ' . $title);
         $output[] = $indentation . Mermaid::INDENTATION . self::DIRECTION . ' ' . $this->direction->name;
 
-        if (count($this->subGraphs) > 0) {
-            $output[] = $this->renderItems($this->subGraphs, $indentation);
-        }
-        if (count($this->nodes) > 0) {
-            $output[] = $this->renderItems($this->nodes, $indentation);
-        }
-        if (count($this->links) > 0) {
-            $output[] = $this->renderItems($this->links, $indentation);
-        }
+        $this->renderItems($this->subGraphs, $indentation, $output);
+        $this->renderItems($this->nodes, $indentation, $output);
+        $this->renderItems($this->links, $indentation, $output);
+        $this->renderInteractions($this->nodes, $output);
 
         $output[] = $indentation . self::END;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright Copyright © 2023 BeastBytes - All rights reserved
+ * @copyright Copyright © 2024 BeastBytes - All rights reserved
  * @license BSD 3-Clause
  */
 
@@ -20,8 +20,6 @@ final class Link
     public function __construct(
         private readonly Node $node0,
         private readonly Node $node1,
-        private string $text = '',
-        private readonly bool $isMarkdown = false,
         private readonly LinkStyle $style = LinkStyle::Solid,
         private readonly int $length = 1,
         private readonly ArrowHead $arrowHead = ArrowHead::Default,

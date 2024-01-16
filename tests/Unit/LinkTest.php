@@ -6,8 +6,8 @@ use BeastBytes\Mermaid\Flowchart\LinkStyle;
 use BeastBytes\Mermaid\Flowchart\Node;
 use BeastBytes\Mermaid\Mermaid;
 
-const TEXT = 'Text';
-const MARKDOWN_TEXT = '*Markdown* Text';
+defined('TEXT') or define('TEXT', 'Text');
+defined('MARKDOWN_TEXT') or define('MARKDOWN_TEXT', '*Markdown* Text');
 
 test('Simple link', function () {
     $node0 = new Node('node0');
@@ -50,7 +50,9 @@ test('Link with text', function (string $text, bool $isMarkdown, string $result)
     $node0 = new Node('node0');
     $node1 = new Node('node1');
 
-    $link = new Link($node0, $node1, $text, $isMarkdown);
+    $link = (new Link($node0, $node1))
+        ->withText($text, $isMarkdown)
+    ;
 
     expect($link->render(Mermaid::INDENTATION))
         ->toBe($result)
