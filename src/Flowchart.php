@@ -35,7 +35,7 @@ final class Flowchart implements MermaidInterface, Stringable
         return $this->render();
     }
 
-    public function render(): string
+    public function render(array $attributes = []): string
     {
         $output = [];
 
@@ -50,6 +50,6 @@ final class Flowchart implements MermaidInterface, Stringable
         $this->renderInteractions($this->nodes, $output);
         $this->renderClassDefs($output);
 
-        return Mermaid::render($output);
+        return Mermaid::render($output, $attributtes);
     }
 }
