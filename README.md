@@ -1,22 +1,6 @@
 # Mermaid Flowchart
-PHP for [Mermaid.js](https://mermaid.js.org/) flowcharts.
+PHP for the [Mermaid.js](https://mermaid.js.org/) diagramming and charting tool [flowchart](https://mermaid.js.org/syntax/flowchart.html).
 
 For license information see the [LICENSE](LICENSE.md) file.
 
-## Installation
-
-The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
-
-Either run
-
-```
-php composer.phar require --prefer-dist beastbytes/mermaid-flowchart
-```
-
-or add
-
-```json
-"beastbytes/mermaid-flowchart": "*"
-```
-
-to the require section of your composer.json.````
+Documentation is at [https://beastbytes.github.io/mermaid-flowchart]()
