@@ -1,8 +1,4 @@
 <?php
-/**
- * @copyright Copyright © 2024 BeastBytes - All rights reserved
- * @license BSD 3-Clause
- */
 
 declare(strict_types=1);
 
@@ -10,25 +6,28 @@ namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\CommentTrait;
 use BeastBytes\Mermaid\Direction;
+use BeastBytes\Mermaid\DirectionTrait;
 use BeastBytes\Mermaid\InteractionRendererTrait;
 use BeastBytes\Mermaid\Mermaid;
 use BeastBytes\Mermaid\RenderItemsTrait;
 
-final class SubGraph
+final class SubGraph implements LinkableInterface
 {
     use CommentTrait;
+    use DirectionTrait;
     use GraphTrait;
     use InteractionRendererTrait;
     use RenderItemsTrait;
 
-    private const DIRECTION = 'direction';
-    private const END = 'end';
-    private const TYPE = 'subgraph';
+    private const string DIRECTION = 'direction %s';
+    private const string END = 'end';
+    private const string ID = '%s [%s]';
+    private const string TITLE = ' %s';
+    private const string SUBGRAPH = 'subgraph%s';
 
     public function __construct(
-        private readonly string $title = '',
-        private readonly string $id = '',
-        private readonly Direction $direction = Direction::TB
+        private readonly ?string $title = null,
+        private readonly ?string $id = null
     )
     {
     }
@@ -38,23 +37,24 @@ final class SubGraph
     {
         $output = [];
 
-        $this->renderComment($indentation, $output);
+        $output[] = $this->renderComment($indentation);
 
         $title = $this->title;
-        if ($title !== '' && $this->id !== '') {
-            $title = $this->id . ' [' . $this->title . ']';
+        if (is_string($title) && is_string($this->id)) {
+            $title = sprintf(self::ID, $this->id, $this->title);
         }
 
-        $output[] = $indentation . self::TYPE . ($title === '' ? '' : ' ' . $title);
-        $output[] = $indentation . Mermaid::INDENTATION . self::DIRECTION . ' ' . $this->direction->name;
-
-        $this->renderItems($this->subGraphs, $indentation, $output);
-        $this->renderItems($this->nodes, $indentation, $output);
-        $this->renderItems($this->links, $indentation, $output);
-        $this->renderInteractions($this->nodes, $output);
-
+        $output[] = $indentation . sprintf(
+            self::SUBGRAPH,
+            (is_string($title) ? sprintf(self::TITLE, $title) : '')
+        );
+        $output[] = $indentation . Mermaid::INDENTATION . sprintf(self::DIRECTION, $this->direction->name);
+        $output[] = $this->renderItems($this->subGraphs, $indentation);
+        $output[] = $this->renderItems($this->nodes, $indentation);
+        $output[] = $this->renderItems($this->edges, $indentation);
+        $output[] = $this->renderInteractions($this->nodes);
         $output[] = $indentation . self::END;
 
-        return implode("\n", $output);
+        return implode("\n", array_filter($output, fn($v) => !empty($v)));
     }
 }

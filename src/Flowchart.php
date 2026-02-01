@@ -1,8 +1,4 @@
 <?php
-/**
- * @copyright Copyright © 2024 BeastBytes - All rights reserved
- * @license BSD 3-Clause
- */
 
 declare(strict_types=1);
 
@@ -10,15 +6,13 @@ namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\ClassDefTrait;
 use BeastBytes\Mermaid\CommentTrait;
+use BeastBytes\Mermaid\Diagram;
 use BeastBytes\Mermaid\DirectionTrait;
 use BeastBytes\Mermaid\InteractionRendererTrait;
-use BeastBytes\Mermaid\Mermaid;
-use BeastBytes\Mermaid\MermaidInterface;
 use BeastBytes\Mermaid\RenderItemsTrait;
 use BeastBytes\Mermaid\TitleTrait;
-use Stringable;
 
-final class Flowchart implements MermaidInterface, Stringable
+final class Flowchart extends Diagram
 {
     use ClassDefTrait;
     use CommentTrait;
@@ -28,28 +22,21 @@ final class Flowchart implements MermaidInterface, Stringable
     use RenderItemsTrait;
     use TitleTrait;
 
-    private const TYPE = 'flowchart';
+    private const string TYPE = 'flowchart';
 
-    public function __toString(): string
-    {
-        return $this->render();
-    }
-
-    public function render(array $attributes = []): string
+    protected function renderDiagram(): string
     {
         $output = [];
 
-        $this->renderComment('', $output);
-        $this->renderTitle($output);
-
+        $output[] = $this->renderComment('');
+        $output[] = $this->renderTitle('');
         $output[] = self::TYPE . ' ' . $this->direction->name;
+        $output[] = $this->renderItems($this->subGraphs, '');
+        $output[] = $this->renderItems($this->nodes, '');
+        $output[] = $this->renderItems($this->edges, '');
+        $output[] = $this->renderInteractions($this->nodes);
+        $output[] = $this->renderClassDefs();
 
-        $this->renderItems($this->subGraphs, '', $output);
-        $this->renderItems($this->nodes, '', $output);
-        $this->renderItems($this->links, '', $output);
-        $this->renderInteractions($this->nodes, $output);
-        $this->renderClassDefs($output);
-
-        return Mermaid::render($output, $attributtes);
+        return implode("\n", array_filter($output, fn($v) => !empty($v)));
     }
 }

@@ -1,53 +1,60 @@
 <?php
-/**
- * @copyright Copyright © 2024 BeastBytes - All rights reserved
- * @license BSD 3-Clause
- */
-
-declare(strict_types=1);
 
 namespace BeastBytes\Mermaid\Flowchart;
 
 use BeastBytes\Mermaid\CommentTrait;
+use BeastBytes\Mermaid\IdTrait;
 use BeastBytes\Mermaid\InteractionInterface;
 use BeastBytes\Mermaid\InteractionTrait;
-use BeastBytes\Mermaid\NodeInterface;
-use BeastBytes\Mermaid\NodeTrait;
 use BeastBytes\Mermaid\StyleClassTrait;
 use BeastBytes\Mermaid\TextTrait;
 
-final class Node implements InteractionInterface, NodeInterface
+final class Node implements InteractionInterface, LinkableInterface, NodeInterface
 {
     use CommentTrait;
+    use IdTrait;
     use InteractionTrait;
-    use NodeTrait;
     use StyleClassTrait;
     use TextTrait;
 
+    private const string SHAPE = '@%s';
+
     public function __construct(
-        private readonly string $id,
-        private readonly NodeShape $shape = NodeShape::Rectangle,
+        private readonly NodeShape $shape = NodeShape::process,
+        ?string $id = null,
     )
     {
+        $this->id = $id;
     }
 
     /** @internal */
     public function render(string $indentation): string
     {
-        if ($this->text === '') {
-            $this->text = $this->id;
-        }
-
         $output = [];
 
-        $this->renderComment($indentation, $output);
-
+        $output[] = $this->renderComment($indentation);
         $output[] = $indentation
             . $this->getId()
             . $this->getStyleClass()
-            . str_replace('%s', $this->getText(), $this->shape->value)
+            . $this->renderShape()
         ;
 
-        return implode("\n", $output);
+        return implode("\n", array_filter($output, fn($v) => !empty($v)));
+    }
+
+    private function renderShape(): string
+    {
+        $text = $this->getText();
+
+        return sprintf(
+            self::SHAPE,
+            json_encode(
+                [
+                    'shape' => $this->shape->value,
+                    'label' => $text ?: $this->getId()
+                ],
+                JSON_FORCE_OBJECT
+            )
+        );
     }
 }
